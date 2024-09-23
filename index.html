@@ -15,31 +15,47 @@
       <div class="options">
         <h2>データ表示オプション</h2>
 
+        <!-- 0. 日付と時刻を選ぶ -->
+         8/20~8/31のみ対応
+        <input type="date" id="inputDate" value="2024-08-20"/>
+        <select id="time-selector">
+          <option value="0000" selected>0000UTC</option>
+          <option value="0600">0600UTC</option>
+          <option value="1200">1200UTC</option>
+          <option value="1800">1800UTC</option>
+
+        </select>
+      
+
         <!-- 1. {海面水温, 地上気圧, 非表示}から1つを選ぶラジオボタン -->
         <div class="radio-group">
-            <h3>気象データ</h3>
+            <h3>地表面データ</h3>
             <label>
-                <input type="radio" name="weatherData" value="seaTemp"> 海面水温
+                <input type="radio" name="weatherData" id="weatherData" value="sst"> 海面水温
             </label><br>
             <label>
-                <input type="radio" name="weatherData" value="pressure"> 地上気圧
+                <input type="radio" name="weatherData" id="weatherData2" value="precip_pmsl" checked> 地上気圧
             </label><br>
-            <label>
-                <input type="radio" name="weatherData" value="none" checked> 非表示
-            </label>
         </div>
 
         <!-- 2. {高度, 気温, 非表示}から1つを選ぶラジオボタン -->
         <div class="radio-group">
-            <h3>その他データ</h3>
+            <h3>等圧面データ</h3>
+            <select id="pressure-selector">
+              <option value="850hPa" selected>850hPa</option>
+              <option value="500hPa">500hPa</option>
+              <option value="300hPa">300hPa</option>
+            </select>
+
+
             <label>
-                <input type="radio" name="otherData" value="altitude"> 高度
+                <input type="radio" name="presData" value="z_wind"> 高度
             </label><br>
             <label>
-                <input type="radio" name="otherData" value="temperature"> 気温
+                <input type="radio" name="presData" value="temp"> 気温
             </label><br>
             <label>
-                <input type="radio" name="otherData" value="none" checked> 非表示
+                <input type="radio" name="presData" value="none" checked> 非表示
             </label>
         </div>
       </div>

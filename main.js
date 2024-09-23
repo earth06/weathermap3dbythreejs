@@ -1,11 +1,12 @@
 import * as THREE from "./build/three.module.js";
 import { OrbitControls } from "./jsm/OrbitControls.js";
 
-let scene, camera, renderer, pointLight, controls, canvas, ctx;
+let scene, camera, renderer, pointLight, controls, canvas, txtloader, weather_mesh;
 
 window.addEventListener("load", init);
 
 function init(){
+    console.log("start")
     canvas = document.querySelector( '#earth' );
     canvas.width = window.innerWidth*0.8
     canvas.height = window.innerHeight
@@ -23,8 +24,8 @@ function init(){
     renderer = new THREE.WebGLRenderer({alpha: true, canvas });
     renderer.setSize(canvas.width, canvas.height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    
-    let textures = new THREE.TextureLoader().load("./weathermap/basemap/basemap.png");
+    txtloader = new THREE.TextureLoader()
+    let textures = txtloader.load("./weathermap/basemap/basemap.png");
     
     
     //ジオメトリの作成
@@ -43,14 +44,14 @@ function init(){
     let weather_geometry = new THREE.SphereGeometry(105, 64, 32);
     let weather_material = new THREE.MeshLambertMaterial( 
          {  
-            map: new THREE.TextureLoader().load("./weathermap/sfc/precip_p/precip_pmsl_202408200000.png"),
+            map: txtloader.load("./weathermap/sfc/precip_pmsl/precip_pmsl_202408200000.png"),
 
 
             transparent: true,
             side: THREE.DoubleSide // 裏からも見えるようにする
          }
     )
-    let weather_mesh = new THREE.Mesh(weather_geometry, weather_material);
+    weather_mesh = new THREE.Mesh(weather_geometry, weather_material);
     scene.add(weather_mesh);
 
 
@@ -60,7 +61,7 @@ function init(){
     directionalLight.position.set(1,1,1)
     scene.add(directionalLight)
     
-    //ポイント光源
+    // ポイント光源
     pointLight = new THREE.PointLight(0xffffff,1);
     pointLight.position.set(-200,-200,-200);
     pointLight.decay=1;
@@ -68,13 +69,23 @@ function init(){
     scene.add(pointLight);
     
     //ポイント光源の位置
-    let pointLightHelper = new THREE.PointLightHelper(pointLight, 30);
-    scene.add(pointLightHelper);
+    // let pointLightHelper = new THREE.PointLightHelper(pointLight, 30);
+    // scene.add(pointLightHelper);
     
     //マウス操作
     controls = new OrbitControls(camera, renderer.domElement);
 
     window.addEventListener("resize", onWindowResize);
+    document.getElementById("inputDate").addEventListener("change",updateSfcTexture);
+
+    // 日付・日時・描画する図の種類のいずれかに変更があった場合にテキスチャを更新する
+    document.getElementById("weatherData").addEventListener("change",updateSfcTexture);
+    document.getElementById("weatherData2").addEventListener("change",updateSfcTexture);
+
+    document.getElementById("inputDate").addEventListener("change",updateSfcTexture);
+    document.getElementById("time-selector").addEventListener("change",updateSfcTexture);
+
+
     animate();
 }
 
@@ -90,6 +101,35 @@ function onWindowResize(){
 
 }
 
+function updateSfcTexture(){
+    var obsdate=document.getElementById("inputDate").value;
+    var obstime = document.getElementById("time-selector").value;
+    let elements = document.getElementsByName('weatherData');
+    let len = elements.length;
+    let weather_col = '';
+    for (let i = 0; i < len; i++){
+        if (elements.item(i).checked){
+            weather_col = elements.item(i).value;
+        }
+    }
+
+
+    var yyyymmddhhmm = obsdate.slice(0,4) + obsdate.slice(5,7) + obsdate.slice(8,10) + obstime 
+    var figpath = "./weathermap/sfc/" + weather_col + "/"+weather_col+"_" + yyyymmddhhmm +".png"
+    let textures = txtloader.load(figpath)
+    let weather_material = new THREE.MeshLambertMaterial( 
+         {  
+            map: textures,
+            transparent: true,
+            side: THREE.DoubleSide // 裏からも見えるようにする
+         }
+    )
+    console.log(figpath);
+    weather_material.needsUpdate =true;
+    weather_mesh.material = weather_material
+    renderer.render(scene, camera);
+
+}
 
 function animate(){
     pointLight.position.set(
@@ -101,12 +141,3 @@ function animate(){
     //レンダリング
     renderer.render(scene, camera);
  }
-
-
-
-
-
-
-
-
-
