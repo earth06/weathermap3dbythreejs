@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>データビジュアライゼーションツール</h1>
+        <h1>立体天気図</h1>
     </header>
     <div class="container">
       <canvas id="earth"></canvas>
@@ -16,16 +16,22 @@
         <h2>データ表示オプション</h2>
 
         <!-- 0. 日付と時刻を選ぶ -->
-         8/20~8/31のみ対応
-        <input type="date" id="inputDate" value="2024-08-20"/>
-        <select id="time-selector">
+         <div>
+        (8/20~8/31のみ対応)
+         </div>
+         <div>
+          対象日:<input type="date" id="inputDate" value="2024-08-20"/>
+         </div>
+        <div>
+          対象時刻:<select id="time-selector">
+    
+        
           <option value="0000" selected>0000UTC</option>
           <!-- <option value="0600">0600UTC</option> -->
           <option value="1200">1200UTC</option>
           <!-- <option value="1800">1800UTC</option> -->
-
         </select>
-      
+          </div>
 
         <!-- 1. {海面水温, 地上気圧, 非表示}から1つを選ぶラジオボタン -->
         <div class="radio-group">
@@ -41,11 +47,13 @@
         <!-- 2. {高度, 気温, 非表示}から1つを選ぶラジオボタン -->
         <div class="radio-group">
             <h3>等圧面データ(未実装)</h3>
-            <select id="pressure-selector">
+            <div>
+            等圧面:<select id="pressure-selector">
               <option value="850hPa" selected>850hPa</option>
               <option value="500hPa">500hPa</option>
               <option value="300hPa">300hPa</option>
             </select>
+            </div>
 
 
             <label>
