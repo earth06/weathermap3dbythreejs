@@ -1,1 +1,2 @@
-*.png filter=lfs diff=lfs merge=lfs -text
+weathermap/sfc/*/*0600.png filter=lfs diff=lfs merge=lfs -text
+weathermap/sfc/*/*1800.png filter=lfs diff=lfs merge=lfs -text
