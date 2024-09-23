@@ -1,0 +1,5 @@
+notebook/.ipynb_checkpoints/
+notebook/tmp/*.png
+tmp/*.png
+weathermap/*/*/*2024080*.png
+weathermap/*/*/*2024081*.png
