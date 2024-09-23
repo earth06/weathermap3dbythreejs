@@ -25,7 +25,7 @@ function init(){
     renderer.setSize(canvas.width, canvas.height);
     renderer.setPixelRatio(window.devicePixelRatio);
     txtloader = new THREE.TextureLoader()
-    let textures = txtloader.load("./weathermap/basemap/basemap.png");
+    let textures = txtloader.load("./weathermap/basemap/bluemarble.jpg");
     
     
     //ジオメトリの作成
