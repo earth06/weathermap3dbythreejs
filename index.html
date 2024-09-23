@@ -7,13 +7,56 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>データビジュアライゼーションツール</h1>
+    </header>
+    <div class="container">
+      <canvas id="earth"></canvas>
+      <div class="options">
+        <h2>データ表示オプション</h2>
+
+        <!-- 1. {海面水温, 地上気圧, 非表示}から1つを選ぶラジオボタン -->
+        <div class="radio-group">
+            <h3>気象データ</h3>
+            <label>
+                <input type="radio" name="weatherData" value="seaTemp"> 海面水温
+            </label><br>
+            <label>
+                <input type="radio" name="weatherData" value="pressure"> 地上気圧
+            </label><br>
+            <label>
+                <input type="radio" name="weatherData" value="none" checked> 非表示
+            </label>
+        </div>
+
+        <!-- 2. {高度, 気温, 非表示}から1つを選ぶラジオボタン -->
+        <div class="radio-group">
+            <h3>その他データ</h3>
+            <label>
+                <input type="radio" name="otherData" value="altitude"> 高度
+            </label><br>
+            <label>
+                <input type="radio" name="otherData" value="temperature"> 気温
+            </label><br>
+            <label>
+                <input type="radio" name="otherData" value="none" checked> 非表示
+            </label>
+        </div>
+      </div>
+
+
+    </div>
+  
     <script type="importmap">
         {
             "imports": {
               "three": "./build/three.module.js"
             }
           }       
-    </script>  
+    </script> 
+
     <script src="main.js" type="module"></script>
+
+
 </body>
 </html>

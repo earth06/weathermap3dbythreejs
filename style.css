@@ -2,7 +2,45 @@ body {
     margin: 0;  /* 余白を0*/
     width: 100%;
     height: 100%;
+}
+header {
+    width: 100%;
+    background-color: #4CAF50;
+    padding: 20px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    color: white;
+    font-size: 24px;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 80px); /* タイトルの高さを除く */
+}
+
+.options {
+    width: 20vw;
+    box-sizing: border-box;
+}
+
+
+
+canvas{
+    top: 0;
+    left: 0; /* 左端に配置 */
+    width: 80vw;  /* ビューポート幅の80% */
+    height: 100vh; /* ビューポート高さの100% */ 
+    display: block;    
+}
+
+
+#earth {
+
     background-image: url("./images/space.jpg");
     background-size: cover;
-    background-position: center;
+    background-position: center;    
 }

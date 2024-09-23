@@ -1,15 +1,18 @@
 import * as THREE from "./build/three.module.js";
 import { OrbitControls } from "./jsm/OrbitControls.js";
 
-let scene, camera, renderer, pointLight, controls;
+let scene, camera, renderer, pointLight, controls, canvas, ctx;
 
 window.addEventListener("load", init);
 
 function init(){
+    canvas = document.querySelector( '#earth' );
+    canvas.width = window.innerWidth*0.8
+    canvas.height = window.innerHeight
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         50,
-        window.innerWidth/window.innerHeight,
+        canvas.width/canvas.height,
         0.1,
         1000
     );
@@ -17,10 +20,9 @@ function init(){
     camera.position.set(0,0,+500);
     
     
-    renderer = new THREE.WebGLRenderer({alpha: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer = new THREE.WebGLRenderer({alpha: true, canvas });
+    renderer.setSize(canvas.width, canvas.height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    document.body.appendChild(renderer.domElement); //canvasをindex.htmlに埋め込む
     
     let textures = new THREE.TextureLoader().load("./weathermap/basemap/basemap.png");
     
@@ -41,8 +43,8 @@ function init(){
     let weather_geometry = new THREE.SphereGeometry(105, 64, 32);
     let weather_material = new THREE.MeshLambertMaterial( 
          {  
-            map: new THREE.TextureLoader().load("./notebook/map/map.png"),
-            // map: new THREE.TextureLoader().load("./notebook/map.svg"),
+            map: new THREE.TextureLoader().load("./weathermap/sfc/precip_p/precip_pmsl_202408200000.png"),
+
 
             transparent: true,
             side: THREE.DoubleSide // 裏からも見えるようにする
@@ -78,14 +80,15 @@ function init(){
 
 //ブラウザのリサイズに対応
 function onWindowResize(){
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    canvas.width = window.innerWidth * 0.8; // 画面幅の80%
+    canvas.height = window.innerHeight;     // 画面高さ全体
+
+    renderer.setSize(canvas.width, canvas.height);
     //カメラのアスペクト比の変更
-    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.aspect = canvas.width/canvas.height;
     camera.updateProjectionMatrix()
 
 }
-
-
 
 
 function animate(){
