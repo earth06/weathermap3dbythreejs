@@ -18,7 +18,7 @@ function init(){
         1000
     );
     //カメラの移動
-    camera.position.set(0,0,+500);
+    camera.position.set(0,0,+120);
     
     
     renderer = new THREE.WebGLRenderer({alpha: true, canvas });
@@ -26,10 +26,12 @@ function init(){
     renderer.setPixelRatio(window.devicePixelRatio);
     txtloader = new THREE.TextureLoader()
     let textures = txtloader.load("./weathermap/basemap/bluemarble.jpg");
-    
+    textures.minFilter = THREE.LinearFilter;
+    textures.maxFilter = THREE.LinearFilter;
+    //textures.generateMipmaps = false;
     
     //ジオメトリの作成
-    let ballgeometry = new THREE.SphereGeometry(100, 64, 32); //(r, nx, ny)r:半径, x,y方向の分割数
+    let ballgeometry = new THREE.SphereGeometry(40, 64, 32); //(r, nx, ny)r:半径, x,y方向の分割数
     
     //マテリアル
     let ballmaterial = new THREE.MeshPhysicalMaterial({map: textures});
@@ -41,7 +43,7 @@ function init(){
     scene.add(ballmesh);
 
     //地球よりちょっと大きめの球を作りそれに気圧面を貼り付ける
-    let weather_geometry = new THREE.SphereGeometry(105, 64, 32);
+    let weather_geometry = new THREE.SphereGeometry(41, 64, 32);
     let weather_material = new THREE.MeshLambertMaterial( 
          {  
             map: txtloader.load("./weathermap/sfc/precip_pmsl/precip_pmsl_202408200000.png"),
@@ -63,7 +65,7 @@ function init(){
     
     // ポイント光源
     pointLight = new THREE.PointLight(0xffffff,1);
-    pointLight.position.set(-200,-200,-200);
+    pointLight.position.set(-100,-100,-100);
     pointLight.decay=1;
     pointLight.power=1000;
     scene.add(pointLight);
