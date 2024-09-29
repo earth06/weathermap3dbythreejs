@@ -74,16 +74,8 @@ function init(){
     directionalLight.position.set(1,1,1)
     scene.add(directionalLight)
     
-    // ポイント光源
-    pointLight = new THREE.PointLight(0xffffff,1);
-    pointLight.position.set(-100,-100,-100);
-    pointLight.decay=1;
-    pointLight.power=1000;
-    scene.add(pointLight);
-    
-    //ポイント光源の位置
-    // let pointLightHelper = new THREE.PointLightHelper(pointLight, 30);
-    // scene.add(pointLightHelper);
+
+
     
     //マウス操作
     controls = new OrbitControls(camera, renderer.domElement);
@@ -200,11 +192,6 @@ function updatePlevTexture(){
 }
 
 function animate(){
-    pointLight.position.set(
-    200 * Math.sin(Date.now()/ 500),
-    200 * Math.sin(Date.now()/ 1000),
-    200 * Math.cos(Date.now()/ 500),
-    );
     directionalLight.position.copy(camera.position);
     requestAnimationFrame(animate);
     //レンダリング
