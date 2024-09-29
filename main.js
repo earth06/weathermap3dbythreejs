@@ -2,6 +2,7 @@ import * as THREE from "./build/three.module.js";
 import { OrbitControls } from "./jsm/OrbitControls.js";
 
 let scene, camera, renderer, pointLight, controls, canvas, txtloader, weather_mesh;
+let weather_material, weather_plev_material, weather_plev_mesh;
 
 window.addEventListener("load", init);
 
@@ -44,11 +45,9 @@ function init(){
 
     //地球よりちょっと大きめの球を作りそれに気圧面を貼り付ける
     let weather_geometry = new THREE.SphereGeometry(41, 64, 32);
-    let weather_material = new THREE.MeshLambertMaterial( 
+    weather_material = new THREE.MeshLambertMaterial( 
          {  
             map: txtloader.load("./weathermap/sfc/precip_pmsl/precip_pmsl_202408200000.png"),
-
-
             transparent: true,
             side: THREE.DoubleSide // 裏からも見えるようにする
          }
@@ -56,8 +55,19 @@ function init(){
     weather_mesh = new THREE.Mesh(weather_geometry, weather_material);
     scene.add(weather_mesh);
 
+    //  等圧面
+    let weather_plev_geom = new THREE.SphereGeometry(45, 64, 32);
+    weather_plev_material = new THREE.MeshLambertMaterial( 
+         {  
+            map: txtloader.load("./weathermap/500hPa/z_wind/z_wind_202408200000.png"),
+            transparent: true,
+            side: THREE.DoubleSide // 裏からも見えるようにする
+         }
+    )
+    weather_plev_mesh = new THREE.Mesh(weather_plev_geom, weather_plev_material);
+    scene.add(weather_plev_mesh);
 
-    
+
     //平衡光源
     let directionalLight = new THREE.DirectionalLight(0xffffff, 2); //color, strength
     directionalLight.position.set(1,1,1)
@@ -77,6 +87,7 @@ function init(){
     //マウス操作
     controls = new OrbitControls(camera, renderer.domElement);
 
+    // 地表
     window.addEventListener("resize", onWindowResize);
     document.getElementById("inputDate").addEventListener("change",updateSfcTexture);
 
@@ -86,8 +97,19 @@ function init(){
 
     document.getElementById("inputDate").addEventListener("change",updateSfcTexture);
     document.getElementById("time-selector").addEventListener("change",updateSfcTexture);
+    
+    // 等圧面
+    document.getElementById("inputDate").addEventListener("change",updatePlevTexture);
 
+    // 日付・日時・描画する図の種類のいずれかに変更があった場合にテキスチャを更新する
+    document.getElementById("plevData1").addEventListener("change",updatePlevTexture);
+    document.getElementById("plevData2").addEventListener("change",updatePlevTexture);
+    document.getElementById("plevData3").addEventListener("change",updatePlevTexture);
 
+    document.getElementById("inputDate").addEventListener("change",updatePlevTexture);
+    document.getElementById("time-selector").addEventListener("change",updatePlevTexture);
+    document.getElementById("pressure-selector").addEventListener("change",updatePlevTexture);
+        
     animate();
 }
 
@@ -119,18 +141,40 @@ function updateSfcTexture(){
     var yyyymmddhhmm = obsdate.slice(0,4) + obsdate.slice(5,7) + obsdate.slice(8,10) + obstime 
     var figpath = "./weathermap/sfc/" + weather_col + "/"+weather_col+"_" + yyyymmddhhmm +".png"
     let textures = txtloader.load(figpath)
-    let weather_material = new THREE.MeshLambertMaterial( 
-         {  
-            map: textures,
-            transparent: true,
-            side: THREE.DoubleSide // 裏からも見えるようにする
-         }
-    )
-    console.log(figpath);
-    weather_material.needsUpdate =true;
-    weather_mesh.material = weather_material
+    weather_mesh.material.map = textures;
+    weather_mesh.material.needsUpdate=true;
     renderer.render(scene, camera);
+}
 
+function updatePlevTexture(){
+    var obsdate=document.getElementById("inputDate").value;
+    var obstime = document.getElementById("time-selector").value;
+    var plev = document.getElementById("pressure-selector").value;
+    let elements = document.getElementsByName('plevData');
+
+    let len = elements.length;
+    let weather_col = '';
+    for (let i = 0; i < len; i++){
+        if (elements.item(i).checked){
+            weather_col = elements.item(i).value;
+        }
+    }
+    if (weather_col=="none"){
+        // マテリアルのテクスチャを削除
+        weather_plev_mesh.material.map = null;
+        weather_plev_mesh.material.transparent = true;
+        // マテリアルを更新
+        weather_plev_mesh.material.needsUpdate = true;
+        renderer.render(scene, camera)
+        return 0
+    }
+
+    var yyyymmddhhmm = obsdate.slice(0,4) + obsdate.slice(5,7) + obsdate.slice(8,10) + obstime 
+    var figpath = "./weathermap/"+plev+"/" + weather_col + "/"+weather_col+"_" +plev+"_"+ yyyymmddhhmm +".png"
+    let textures = txtloader.load(figpath)
+    weather_plev_mesh.material.map = textures;
+    weather_plev_mesh.material.needsUpdate =true;
+    renderer.render(scene, camera);
 }
 
 function animate(){
